@@ -100,10 +100,13 @@ class Tabuleiro {
     }
 
     public function verificaTabuleiroCompleto() {
-        for ($lin = 0; $lin < 3; $lin++)
-            for ($col = 0; $col < 3; $col++)
-                if ($this->getPosicao($lin, $col) == 0)
+        for ($lin = 0; $lin < 3; $lin++){
+            for ($col = 0; $col < 3; $col++){
+                if ($this->getPosicao($lin, $col) == 0){
                     return false;
+                }
+            }
+        }
         return true;
     }
 

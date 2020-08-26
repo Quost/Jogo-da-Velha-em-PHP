@@ -173,6 +173,10 @@ class Jogo {
 
     public function partida($tabuleiro, $jogadores) {
         if ($this->verificaGanhador($tabuleiro) == 0) {
+            if ($tabuleiro->verificaTabuleiroCompleto()) {
+                print("\nTabuleiro Completo. DEU VELHA! Jogo empatado.\n");
+                return false;
+            }
             print("\n----------------------");
             print("\nRodada: " . $this->rodada);
             print("\nÉ a vez de " . $jogadores[$this->player]->getNome() . "!\n");
@@ -194,10 +198,6 @@ class Jogo {
                 return false;
             } else {
                 print("\n" . $jogadores[1]->getNome() . " ganhou!\n");
-                return false;
-            }
-            if ($tabuleiro->verificaTabuleiroCompleto()) {
-                print("\nTabuleiro Completo. DEU VELHA! Jogo empatado.");
                 return false;
             }
             return false;
