@@ -21,7 +21,7 @@ while ($op != 2) {
         $jogo = new Jogo();
         $jogo->inicializarJogo();
         print("Partida Finalizada!\n\n");
-        sleep(5);
+        sleep(3);
     }    
     
     

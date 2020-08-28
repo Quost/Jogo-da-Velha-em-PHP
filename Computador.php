@@ -8,8 +8,9 @@ require_once "Tabuleiro.php";
 
 class Computador extends Jogador {
 
-    public $jogada = 0;
-    public $tentativa = array();
+    private $jogada = 0;
+    private $tentativa = array();
+    private $nivel;
 
     public function Computador($nome, $simbolo) {
         $this->setNome($nome);
@@ -17,16 +18,38 @@ class Computador extends Jogador {
         $this->setTipo("Computador");
         $this->jogada = 0;
         $this->setIsComputer(true);
+        $this->setNivel(1);
     }
 
     public function jogar($tabuleiro) {
-        $tentativa = $this->setarLance($tabuleiro);
-        print("Linha: " . $tentativa[0] + 1 . "\nColuna: " . $tentativa[1] + 1);
+        if($this->nivel=1){
+            $tentativa= $this->nivelFacil($tabuleiro);
+        }else{
+            $tentativa = $this->nivelDificil($tabuleiro);
+        }
         $tabuleiro->posicionar($tentativa, $this->getSimbolo());
+        sleep(2);
         return $tabuleiro;
     }
+    
+    public function nivelFacil($tabuleiro){
+        do{
+            $this->tentativa[0]=rand(0,2);
+            $this->tentativa[1]=rand(0,2);
+        } while (!$this->checarTentativa($this->tentativa, $tabuleiro));
+        sleep(1);
+        print("\nLinha: ".($this->tentativa[0]+1)."\nColuna: ".($this->tentativa[1]+1)."\n");
+        sleep(2);
+        return $this->tentativa; 
+    }
 
-    public function setarLance($tabuleiro) {
+    public function nivelDificil($tabuleiro) {
+        for($lin=0;$lin<3;$lin++){
+            for($col=0;$col<3;$col++){
+                // code here; 
+            }
+        }
+            
         do {
             if ($this->getComeca() == true) {
                 if ($this->jogada == 0) {
@@ -160,6 +183,14 @@ class Computador extends Jogador {
         $tentativa[1] = $col;
         $this->jogada++;
         return $tentativa;
+    }
+    
+    public function setNivel($nivel) {
+        $this->nivel= $nivel;
+    }
+
+    public function getNivel() {
+        return $this->nivel;
     }
 
 }

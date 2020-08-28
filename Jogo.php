@@ -71,6 +71,22 @@ class Jogo {
             } else {
                 $jogadores[0] = new Computador("Computador 1", 1);
             }
+            while ($op3 != 2 && $op3 != 1) {
+                print("\nQual o nível do computador 1?");
+                print("\n1. Fácil");
+                print("\n2. Difícil");
+                print("\nOpcão escolhida: ");
+                $op3 = readline();
+                if ($op3 != 1 && $op3 != 2) {
+                    print("Opção Inválida! Tente novamente!\n");
+                    $op3 = 0;
+                }
+            }
+            if ($op3 == 1) {
+                $jogadores[0]->setNivel(0);
+            } else {
+                $jogadores[0]->setNivel(1);
+            }
         }
         if ($jogadores[0]->getSimbolo() == -1)
             print("\nJogador 1 criado!\n" . $jogadores[0]->getTipo() . " - " . $jogadores[0]->getNome() . " - X\n");
@@ -102,6 +118,23 @@ class Jogo {
                 $jogadores[1] = new Computador("Computador 2", 1);
             } else {
                 $jogadores[1] = new Computador("Computador 2", -1);
+            }
+            $op3 = 0;
+            while ($op3 != 2 && $op3 != 1) {
+                print("\nQual o nível do computador 2?");
+                print("\n1. Fácil");
+                print("\n2. Difícil");
+                print("\nOpcão escolhida: ");
+                $op3 = readline();
+                if ($op3 != 1 && $op3 != 2) {
+                    print("Opção Inválida! Tente novamente!\n");
+                    $op3 = 0;
+                }
+            }
+            if ($op3 == 1) {
+                $jogadores[1]->setNivel(0);
+            } else {
+                $jogadores[1]->setNivel(1);
             }
         }
         if ($jogadores[1]->getSimbolo() == -1)
@@ -145,8 +178,7 @@ class Jogo {
                     print("Opção Inválida! Tente novamente!\n");
                     $op = 0;
                 }
-                $op--;
-                $this->player=$op;
+                print("\n");
             }
             print("\n");
             print($jogadores[$this->player]->getNome() . " foi o escolhido(a) para começar!\n");
@@ -182,10 +214,10 @@ class Jogo {
             print("\nÉ a vez de " . $jogadores[$this->player]->getNome() . "!\n");
 
             $tabuleiro = $jogadores[$this->player]->jogar($tabuleiro);
-            
+
             $this->vez++;
             $this->rodada++;
-            
+
             if ($this->player == 1) {
                 $this->player = 0;
             } else {
@@ -194,10 +226,18 @@ class Jogo {
             return true;
         } else {
             if ($this->verificaGanhador($tabuleiro) == -1) {
-                print("\n" . $jogadores[0]->getNome() . " ganhou!\n");
+                if ($jogadores[0]->getSimbolo() == -1) {
+                    print("\n" . $jogadores[0]->getNome() . " ganhou!\n");
+                } else {
+                    print("\n" . $jogadores[1]->getNome() . " ganhou!\n");
+                }
                 return false;
             } else {
-                print("\n" . $jogadores[1]->getNome() . " ganhou!\n");
+                if ($jogadores[1]->getSimbolo() == 1) {
+                    print("\n" . $jogadores[1]->getNome() . " ganhou!\n");
+                } else {
+                    print("\n" . $jogadores[0]->getNome() . " ganhou!\n");
+                }
                 return false;
             }
             return false;
