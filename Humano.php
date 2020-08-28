@@ -14,7 +14,7 @@ class Humano extends Jogador {
         $this->setTipo("Humano");
     }
 
-    public function jogar($tabuleiro) {
+    public function jogar($tabuleiro,$rodada) {
         $tentativa = $this->setarLance($tabuleiro);
         $tabuleiro->posicionar($tentativa, $this->getSimbolo());
         return $tabuleiro;

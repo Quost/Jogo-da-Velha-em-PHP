@@ -71,6 +71,7 @@ class Jogo {
             } else {
                 $jogadores[0] = new Computador("Computador 1", 1);
             }
+            $op3=0;
             while ($op3 != 2 && $op3 != 1) {
                 print("\nQual o nível do computador 1?");
                 print("\n1. Fácil");
@@ -178,7 +179,11 @@ class Jogo {
                     print("Opção Inválida! Tente novamente!\n");
                     $op = 0;
                 }
-                print("\n");
+                if($op==1){
+                    $this->player=0;
+                }else{
+                    $this->player=1;
+                }
             }
             print("\n");
             print($jogadores[$this->player]->getNome() . " foi o escolhido(a) para começar!\n");
@@ -213,7 +218,7 @@ class Jogo {
             print("\nRodada: " . $this->rodada);
             print("\nÉ a vez de " . $jogadores[$this->player]->getNome() . "!\n");
 
-            $tabuleiro = $jogadores[$this->player]->jogar($tabuleiro);
+            $tabuleiro = $jogadores[$this->player]->jogar($tabuleiro, $this->rodada);
 
             $this->vez++;
             $this->rodada++;
