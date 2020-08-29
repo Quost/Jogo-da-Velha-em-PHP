@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author matheusquost
  */
@@ -47,5 +46,4 @@ class Humano extends Jogador {
         }while (!$this->checarTentativa($tentativa, $tabuleiro));
         return $tentativa;
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author matheusquost
  */
@@ -22,7 +21,5 @@ while ($op != 2) {
         $jogo->inicializarJogo();
         print("Partida Finalizada!\n\n");
         sleep(3);
-    }    
-    
-    
+    }        
 }

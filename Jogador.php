@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author matheusquost
  */
@@ -10,13 +9,6 @@ class Jogador {
     public $simbolo;
     public $tipo;
     public $comeca;
-
-    public function checarTentativa($tentativa, $tabuleiro) {
-        if ($tabuleiro->pegarPosicao($tentativa) == 0)
-            return true;
-        else
-            return false;
-    }
 
     public function setNome($nome) {
         $this->nome = $nome;
@@ -57,5 +49,11 @@ class Jogador {
     public function getComeca() {
         return $this->comeca;
     }
-
+    
+     public function checarTentativa($tentativa, $tabuleiro) {
+        if ($tabuleiro->pegarPosicao($tentativa) == 0)
+            return true;
+        else
+            return false;
+    }
 }

@@ -14,7 +14,9 @@ class Computador extends Jogador {
     private $mapa = array();
     private $cont = 0;
     private $a1 = array(), $a2 = array(), $a3 = array(), $a4 = array();
-    private $a5 = array(), $a6 = array(), $a7 = array(), $a8 = array(), $a9 = array();
+    private $a5 = array(), $a7 = array(), $a9 = array();
+    private $marcarMeio = false;
+    private $chance = false;
 
     public function Computador($nome, $simbolo) {
         $this->setNome($nome);
@@ -32,10 +34,10 @@ class Computador extends Jogador {
             $tentativa = $this->nivelDificil($tabuleiro, $rodada);
             sleep(1);
             print("\nLinha: " . ($tentativa[0] + 1) . "\nColuna: " . ($tentativa[1] + 1) . "\n");
-            sleep(2);
+            sleep(1);
         }
         $tabuleiro->posicionar($tentativa, $this->getSimbolo());
-        sleep(2);
+        sleep(1);
         return $tabuleiro;
     }
 
@@ -46,7 +48,7 @@ class Computador extends Jogador {
         } while (!$this->checarTentativa($this->tentativa, $tabuleiro));
         sleep(1);
         print("\nLinha: " . ($this->tentativa[0] + 1) . "\nColuna: " . ($this->tentativa[1] + 1) . "\n");
-        sleep(2);
+        sleep(1);
         return $this->tentativa;
     }
 
@@ -76,22 +78,65 @@ class Computador extends Jogador {
                 } else {
                     do {
                         $posicao = $this->cantoNaoOposto($this->a1);
-                    } while (($posicao[0] == $this->a2[0]) && ($posicao[1] == $this->a2[1]));
-                    return $posicao;
+                    } while (($posicao[0] == $this->a2[0]) || ($posicao[1] == $this->a2[1]));
+                    $this->a3 = $posicao;
+                    $this->marcarMeio = true;
+                    return $this->a3;
                 }
             } else if ($rodada == 5) {
-                $this->mapeiaTabuleiro($tabuleiro);
-                $this->mapeiaDerrota($tabuleiro);
+                $this->a5 = $this->dicaProximoLance($tabuleiro);
+                if ($this->a5 != -2) {
+                    return $this->a5;
+                } else if ($this->marcarMeio) {
+                    $this->a5 = array(1, 1);
+                    return $this->a5;
+                }
+                $naoOp = $this->cantoNaoOposto($this->a1);
+                $Op = $this->cantoOposto($naoOp);
+                $naoOp = $tabuleiro->pegarPosicao($naoOp);
+                $simbolo = $this->simbolo * -1;
+                if ($naoOp == $simbolo || $Op == $simbolo) {
+                    if ($naoOp == $simbolo) {
+                        $this->a5 = $Op;
+                        return $this->a5;
+                    } else {
+                        $this->a5 = $naoOp;
+                        return $this->a5;
+                    }
+                }
+            } else {
+                if ($this->dicaProximoLance($tabuleiro) != -2) {
+                    return $this->dicaProximoLance($tabuleiro);
+                }
             }
         } else {
             $this->mapeiaTabuleiro($tabuleiro);
             if ($rodada == 2) {
                 if ($this->verificaSeLado($this->a1)) {
-                    return array(1, 1);
+                    $this->chance = true;
+                    $this->a2 = array(1, 1);
+                    return $this->a2;
                 } else if ($this->verificaSeCanto($this->a1)) {
-                    return array(1, 1);
+                    $this->a2 = array(1, 1);
+                    return $this->a2;
                 } else {
-                    return $this->rodada1($tabuleiro);
+                    do {
+                        $this->a2 = $this->rodada1($tabuleiro);
+                    } while (!$this->checarTentativa($this->a2, $tabuleiro));
+                    return $this->a2;
+                }
+            } else {
+                if ($chance == true) {
+
+                    if ($tabuleiro->getPosicao($this->a2[1], $this->a2[0]) == $this->getSimbolo() * -1) {
+                        $this->a3 = getPosicao($this->a2[1], $this->a2[0]);
+                        $this->a4 = $this->rodada1($tabuleiro);
+                        $this->chance = false;
+                        return $this->a4;
+                    }
+                }
+                if ($this->dicaProximoLance($tabuleiro) != -2) {
+                    return $this->dicaProximoLance($tabuleiro);
                 }
             }
         }
@@ -156,23 +201,37 @@ class Computador extends Jogador {
     }
 
     public function cantoNaoOposto($posicao) {
-        if ($posicao[0] - 2 == 0) {
-            if ($posicao[1] - 2 == 0) {
+        $rand = rand(0, 1);
+        if (($posicao == array(0, 0)) || ($posicao == array(2, 2))) {
+            if ($rand == 0) {
                 return array(0, 2);
             } else {
-                return array(0, 0);
+                return array(2, 0);
             }
         } else {
-            if ($posicao[1] == 0) {
-                return array(0, 2);
-            } else {
+            if ($rand == 0) {
                 return array(0, 0);
+            } else {
+                return array(2, 2);
             }
         }
     }
 
-    public function mapeiaDerrota() {
-        
+    public function mapeiaVitoria($tabuleiro, $simbolo) {
+        if ($tabuleiro->VerificaPossivelVitoriaLinhas($simbolo) != -1) {
+            return $tabuleiro->VerificaPossivelVitoriaLinhas($simbolo);
+        } else if ($tabuleiro->VerificaPossivelVitoriaColunas($simbolo) != -1) {
+            return $tabuleiro->VerificaPossivelVitoriaColunas($simbolo);
+        } else if ($tabuleiro->VerificaPossivelVitoriaDiagonais($simbolo) != -1) {
+            return $tabuleiro->VerificaPossivelVitoriaDiagonais($simbolo);
+        } else {
+            return -2;
+        }
+    }
+
+    public function mapeiaDerrota($tabuleiro, $simbolo) {
+        $simbolo = $simbolo * -1;
+        return $this->mapeiaVitoria($tabuleiro, $simbolo);
     }
 
     public function mapeiaTabuleiro($tabuleiro) {
@@ -184,6 +243,26 @@ class Computador extends Jogador {
                 }
             }
         }
+    }
+
+    public function dicaProximoLance($tabuleiro) {
+        $posicao = $this->mapeiaVitoria($tabuleiro, $this->getSimbolo());
+        if ($posicao != -2) {
+            return $posicao;
+        } else {
+            $posicao = $this->mapeiaDerrota($tabuleiro, $this->getSimbolo());
+            if ($posicao != -2) {
+                return $posicao;
+            }
+        }
+        if ($tabuleiro->posicionaLinha($this->getSimbolo()) != -1) {
+            return $tabuleiro->posicionaLinha($this->getSimbolo());
+        } else {
+            if ($tabuleiro->posicionaColuna($this->getSimbolo()) != -1) {
+                return $tabuleiro->posicionaColuna($this->getSimbolo());
+            }
+        }
+        return -2;
     }
 
 }
